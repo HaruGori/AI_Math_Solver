@@ -1,0 +1,22 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "format": "biome format --write .",
+    "lint": "biome lint --write . ",
+    "biome": "biome check --write .",
+    "dev": "next dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.1",
+  "devDependencies": {
+    "@biomejs/biome": "2.2.4"
+  },
+  "dependencies": {
+    "next": "^15.5.4"
+  }
+}

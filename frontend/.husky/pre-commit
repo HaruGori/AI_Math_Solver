@@ -1,0 +1,3 @@
+# package.json と pnpm-lock.yaml の差異を検出し、更新する
+pnpm install
+git add pnpm-lock.yaml

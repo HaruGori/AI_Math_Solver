@@ -22,3 +22,14 @@
 - デプロイ
   - **Vercel**: Next.jsと相性が良い、無料枠あり、Vercel_blobと相性良い
   - **Railway**: 使用したことがある、無料枠あり。(将来的にはRenderに移行するかも)
+
+## 開発者用
+
+### リンター・フォーマッタ
+
+- 使用ツール
+  - **[Biome](https://biomejs.dev/ja/)**: 使用したことがあり、ESlintとの互換性が高く速いことに加えてモダンで文献数もある程度ある
+
+- リント：`pnpm run lint`
+- フォーマット：`pnpm run format`
+- リントとフォーマットの両方:`pnpm run biome`

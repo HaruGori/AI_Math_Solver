@@ -1,0 +1,47 @@
+name: Run Biome on Push and Pull Request # main ブランチへの push または PR 作成時に Biome を実行するワークフロー
+
+on:
+  push:
+    branches: [main] # main ブランチへの push 時にトリガー
+  pull_request:
+    branches: [main] # main ブランチへの PR 作成・更新時にトリガー
+
+jobs:
+  biome-check:
+    runs-on: ubuntu-latest # GitHub が提供する最新の Ubuntu 仮想環境でジョブを実行
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        # リポジトリのソースコードをチェックアウト（GitHub Actions がコードにアクセスできるようにする）
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+        # Node.js のバージョン 18 をセットアップ（pnpm や Biome の実行に必要）
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+        # グローバルに pnpm をインストール（npm 経由でインストール）
+
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('frontend/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+        # pnpm の依存関係キャッシュを保存・復元（CI の高速化とネットワーク負荷軽減）
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: frontend
+        # frontend ディレクトリで依存関係をインストール
+        # --frozen-lockfile により lock ファイルと一致しない場合はエラー → CI の再現性を保証
+
+      - name: Run Biome check
+        run: pnpm biome check . --formatter github
+        working-directory: frontend
+        # Biome によるコードチェックを実行
+        # --formatter github により、エラーが GitHub の UI 上にアノテーションとして表示される

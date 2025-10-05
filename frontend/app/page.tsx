@@ -1,32 +1,24 @@
 "use client";
-import { useEffect, useState } from "react";
 
-type Problem = {
-  id: number;
-  text: string;
-  explanation: string;
-  tags: string[];
-};
-
-export default function ProblemsPage() {
-  const [problems, setProblems] = useState<Problem[]>([]);
-
-  useEffect(() => {
-    fetch("/api/")
-      .then((res) => res.json())
-      .then((data) => setProblems(data));
-  }, []);
-
+export default function HomePage() {
   return (
-    <div>
-      <h1>問題一覧</h1>
-      <ul>
-        {problems.map((p) => (
-          <li key={p.id}>
-            {p.text} → <a href={`${p.id}`}>詳細</a>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <main className="flex flex-col items-center justify-center min-h-screen p-6">
+      <h1 className="text-3xl font-bold mb-6">AI Math Solver</h1>
+
+      <div className="flex flex-col gap-4">
+        <a
+          href="/problems"
+          className="px-6 py-3 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition"
+        >
+          問題一覧へ
+        </a>
+        <a
+          href="/upload"
+          className="px-6 py-3 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition"
+        >
+          アップロードへ
+        </a>
+      </div>
+    </main>
   );
 }

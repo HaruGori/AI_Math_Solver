@@ -16,7 +16,7 @@ export default function ProblemDetail({
   const [problem, setProblem] = useState<Problem | null>(null);
 
   useEffect(() => {
-    fetch("/api/")
+    fetch("http://localhost:5001/api")
       .then((res) => res.json())
       .then((data: Problem[]) => {
         const found = data.find((p) => p.id === Number(params.id));

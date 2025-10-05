@@ -16,11 +16,19 @@ export default function ProblemDetail({
   const [problem, setProblem] = useState<Problem | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api")
-      .then((res) => res.json())
-      .then((data: Problem[]) => {
-        const found = data.find((p) => p.id === Number(params.id));
-        setProblem(found || null);
+    if (!params.id) return;
+    fetch(`http://localhost:5001/api/problems/${params.id}`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Problem not found");
+        }
+        return res.json();
+      })
+      .then((data: Problem) => {
+        setProblem(data);
+      })
+      .catch(() => {
+        setProblem(null);
       });
   }, [params.id]);
 

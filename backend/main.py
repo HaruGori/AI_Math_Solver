@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 
 app = FastAPI()
 
@@ -26,7 +26,7 @@ class CreateProblem(BaseModel):
     tags: List[str]
 
 
-problems = [
+problems_db = [
     {
         "id": 1,
         "text": "x^2 + 2x + 1 = 0 を解け",
@@ -41,15 +41,22 @@ problems = [
     }
 ]
 
-@app.get("/api", response_model=List[Problem])
+@app.get("/api/problems", response_model=List[Problem])
 def get_problems():
-    return problems
+    return problems_db
 
-@app.post("/api", response_model=Problem)
+@app.get("/api/problems/{problem_id}", response_model=Problem)
+def get_problem(problem_id: int):
+    problem = next((p for p in problems_db if p["id"] == problem_id), None)
+    if problem is None:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    return problem
+
+@app.post("/api/problems", response_model=Problem)
 def add_problem(problem: CreateProblem):
-    new_id = max(p["id"] for p in problems) + 1 if problems else 1
+    new_id = max(p["id"] for p in problems_db) + 1 if problems_db else 1
     new_problem = {"id": new_id, **problem.dict()}
-    problems.append(new_problem)
+    problems_db.append(new_problem)
     return new_problem
 
 @app.post("/api/upload")

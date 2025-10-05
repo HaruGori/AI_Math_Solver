@@ -12,7 +12,7 @@ export default function ProblemsPage() {
   const [problems, setProblems] = useState<Problem[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api")
+    fetch("http://localhost:5001/api/problems")
       .then((res) => res.json())
       .then((data) => setProblems(data));
   }, []);

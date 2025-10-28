@@ -1,76 +1,44 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List
 
-app = FastAPI()
+from backend.config import get_settings
+from backend.database import engine, Base
+from backend.routers import problems
+from backend import models
 
-# CORSミドルウェアの設定
+settings = get_settings()
+
+app = FastAPI(
+    title="AI Math Solver API",
+    description="数学問題の解説を作成・管理するAPI",
+    version="1.0.0"
+)
+
+# CORS設定
+# TODO: Use more specific origins from settings in production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 本番環境では、より具体的なオリジンを指定してください
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-class Problem(BaseModel):
-    id: int
-    text: str
-    explanation: str
-    tags: List[str]
+@app.on_event("startup")
+def startup_event():
+    # Create all tables
+    Base.metadata.create_all(bind=engine)
 
-class CreateProblem(BaseModel):
-    text: str
-    explanation: str
-    tags: List[str]
+# ルーターの登録
+app.include_router(problems.router, prefix="/api/problems", tags=["problems"])
 
-
-problems_db = [
-    {
-        "id": 1,
-        "text": "x^2 + 2x + 1 = 0 を解け",
-        "explanation": "解は x = -1",
-        "tags": ["二次方程式"],
-    },
-    {
-        "id": 2,
-        "text": "3の2乗は？",
-        "explanation": "答えは9",
-        "tags": ["算数", "平方根"],
-    }
-]
-
-@app.get("/api/problems", response_model=List[Problem])
-def get_problems():
-    return problems_db
-
-@app.get("/api/problems/{problem_id}", response_model=Problem)
-def get_problem(problem_id: int):
-    problem = next((p for p in problems_db if p["id"] == problem_id), None)
-    if problem is None:
-        raise HTTPException(status_code=404, detail="Problem not found")
-    return problem
-
-@app.post("/api/problems", response_model=Problem)
-def add_problem(problem: CreateProblem):
-    new_id = max(p["id"] for p in problems_db) + 1 if problems_db else 1
-    new_problem = {"id": new_id, **problem.dict()}
-    problems_db.append(new_problem)
-    return new_problem
-
-@app.post("/api/upload")
-def upload_file(file: UploadFile = File(...)):
-    if not file:
-        raise HTTPException(status_code=400, detail="No file uploaded")
-
-    # 本来ならここでファイル保存処理をする
+@app.get("/")
+def root():
     return {
-        "message": "ファイルを受け取りました",
-        "filename": file.filename,
-        "size": file.size,
+        "message": "AI Math Solver API",
+        "docs": "/docs",
     }
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5001)
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}

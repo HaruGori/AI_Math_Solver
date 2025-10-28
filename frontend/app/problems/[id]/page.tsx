@@ -1,54 +1,61 @@
-"use client";
-import { useEffect, useState } from "react";
+import { notFound } from 'next/navigation';
+
+// Type definitions
+type Tag = {
+  id: number;
+  name: string;
+}
 
 type Problem = {
   id: number;
-  text: string;
-  explanation: string;
-  tags: string[];
+  title: string;
+  content: string;
+  solution: string | null;
+  tags: Tag[];
 };
 
-export default function ProblemDetail({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const [problem, setProblem] = useState<Problem | null>(null);
+// Data fetching function
+async function getProblem(id: string): Promise<Problem | null> {
+  try {
+    const res = await fetch(`http://localhost:8000/api/problems/${id}`, {
+      cache: 'no-store', // Ensure fresh data on every request
+    });
 
-  useEffect(() => {
-    if (!params.id) return;
-    fetch(`http://localhost:5001/api/problems/${params.id}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Problem not found");
-        }
-        return res.json();
-      })
-      .then((data: Problem) => {
-        setProblem(data);
-      })
-      .catch(() => {
-        setProblem(null);
-      });
-  }, [params.id]);
+    if (!res.ok) {
+      return null;
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Failed to fetch problem:", error);
+    return null;
+  }
+}
 
+// The page component is now async
+export default async function ProblemDetail({ params }: { params: { id: string } }) {
+  const problem = await getProblem(params.id);
+
+  // If no problem is found, show a 404 page
   if (!problem) {
-    return <div>問題が見つかりません。</div>;
+    notFound();
   }
 
   return (
     <div>
       <h1>問題詳細</h1>
       <p>
-        <strong>問題:</strong> {problem.text}
+        <strong>問題:</strong> {problem.title}
       </p>
       <p>
-        <strong>解説:</strong> {problem.explanation}
+        <strong>内容:</strong> {problem.content}
       </p>
       <p>
-        <strong>タグ:</strong> {problem.tags.join(", ")}
+        <strong>解説:</strong> {problem.solution || "解説はまだありません"}
       </p>
-      <a href="/" className="text-blue-600 underline">
+      <p>
+        <strong>タグ:</strong> {problem.tags.map(t => t.name).join(", ")}
+      </p>
+      <a href="/problems" className="text-blue-600 underline">
         ← 戻る
       </a>
     </div>

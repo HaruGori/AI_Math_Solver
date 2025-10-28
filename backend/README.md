@@ -19,10 +19,10 @@
 
 ## サーバーの実行
 
-開発サーバーを実行するには：
+開発サーバーを実行するには：AI_MATH-SOLVERディレクトリで、
 
 ```bash
-python main.py
+uvicorn backend.main:app --reload --port 8000
 ```
 
-サーバーは`http://127.0.0.1:5001`で実行されます。
+サーバーは`http://127.0.0.1:8000`で実行されます。

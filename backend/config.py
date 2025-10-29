@@ -5,6 +5,10 @@ class Settings(BaseSettings):
     # Database
     # Example for Neon: "postgresql://user:password@host:port/dbname"
     database_url: str
+
+    # OpenRouter
+    openrouter_api_key: str
+    openrouter_ai_model: str
     
     class Config:
         env_file = "backend/.env"

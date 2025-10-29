@@ -26,7 +26,7 @@ class Problem(Base):
     # content_typeは、contentがプレーンテキストか、画像へのパスかを示す ("text" or "image")
     content_type = Column(String(50), nullable=False, default="text")
     image_url = Column(String(500), nullable=True)
-    solution = Column(Text, nullable=True)
+    answer = Column(Text, nullable=True) # AIによる回答
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -68,12 +68,12 @@ class ProblemCreate(ProblemBase):
 class ProblemUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
-    solution: Optional[str] = None
+    answer: Optional[str] = None
     tag_ids: Optional[List[int]] = None
 
 class ProblemSchema(ProblemBase):
     id: int
-    solution: Optional[str] = None
+    answer: Optional[str] = None
     created_at: datetime
     updated_at: datetime
     tags: List[TagSchema] = []
@@ -84,6 +84,3 @@ class ProblemSchema(ProblemBase):
 class ProblemList(BaseModel):
     problems: List[ProblemSchema]
     total: int
-
-class SolutionResponse(BaseModel):
-    solution: str

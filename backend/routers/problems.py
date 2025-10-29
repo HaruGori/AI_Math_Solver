@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 
 from backend import models, database
+from backend.services import ai_service
 
 router = APIRouter()
 
@@ -32,7 +33,7 @@ def create_problem(
 @router.get("/", response_model=models.ProblemList)
 def get_problems(
     skip: int = Query(0, ge=0),
-    limit: int = Query(20, ge=1, le=100),
+    limit: int = Query(20, ge=1, le=1000),
     tag: Optional[str] = None,
     search: Optional[str] = None,
     db: Session = Depends(database.get_db)
@@ -101,3 +102,23 @@ def delete_problem(
     db.delete(db_problem)
     db.commit()
     return None
+
+@router.post("/{problem_id}/solution", response_model=models.ProblemSchema)
+def generate_solution(
+    problem_id: int,
+    db: Session = Depends(database.get_db)
+):
+    """AIによる解説を生成して問題に紐付ける"""
+    db_problem = db.query(models.Problem).filter(models.Problem.id == problem_id).first()
+    if not db_problem:
+        raise HTTPException(status_code=404, detail="Problem not found")
+
+    # AI解説を生成
+    answer = ai_service.generate_answer(db_problem.content)
+    
+    # 生成した解説をDBに保存
+    db_problem.answer = answer
+    db.commit()
+    db.refresh(db_problem)
+    
+    return db_problem

@@ -10,7 +10,7 @@ type Problem = {
   id: number;
   title: string;
   content: string;
-  solution: string | null;
+  answer: string | null;
   tags: Tag[];
 };
 
@@ -50,7 +50,7 @@ export default async function ProblemDetail({ params }: { params: { id: string }
         <strong>内容:</strong> {problem.content}
       </p>
       <p>
-        <strong>解説:</strong> {problem.solution || "解説はまだありません"}
+        <strong>解説:</strong> {problem.answer || "解説はまだありません"}
       </p>
       <p>
         <strong>タグ:</strong> {problem.tags.map(t => t.name).join(", ")}

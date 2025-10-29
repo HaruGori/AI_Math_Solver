@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.config import get_settings
 from backend.database import engine, Base
-from backend.routers import problems
+from backend.routers import problems, upload
 from backend import models
 
 settings = get_settings()
@@ -31,6 +31,7 @@ def startup_event():
 
 # ルーターの登録
 app.include_router(problems.router, prefix="/api/problems", tags=["problems"])
+app.include_router(upload.router, prefix="/api", tags=["upload"])
 
 @app.get("/")
 def root():

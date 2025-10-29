@@ -6,12 +6,16 @@ export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
+  const [answer, setAnswer] = useState("");
 
   const handleUpload = async () => {
     if (!file && !text) {
       setMessage("テキストを入力するか、ファイルを選択してください。");
       return;
     }
+
+    setMessage("アップロード中...");
+    setAnswer("");
 
     const formData = new FormData();
     if (file) {
@@ -29,6 +33,9 @@ export default function UploadPage() {
     const data = await res.json();
     const filename_info = data.filename ? ` → ${data.filename}` : "";
     setMessage(data.message + filename_info);
+    if (data.answer) {
+      setAnswer(data.answer);
+    }
   };
 
   return (
@@ -52,6 +59,13 @@ export default function UploadPage() {
 
 
       {message && <p>{message}</p>}
+
+      {answer && (
+        <div className="mt-4 p-4 border rounded bg-gray-50">
+          <h2 className="font-bold mb-2">AIによる回答:</h2>
+          <pre className="whitespace-pre-wrap font-sans">{answer}</pre>
+        </div>
+      )}
     </div>
   );
 }

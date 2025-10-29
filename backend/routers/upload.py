@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Optional
 
 from backend import models, database
+from backend.services import ai_service
 
 router = APIRouter()
 
@@ -28,6 +29,7 @@ def upload_problem(
 
     image_url_str = None
     filename = None
+    ai_answer = None
 
     # ファイルが提供された場合の処理
     if file:
@@ -49,6 +51,10 @@ def upload_problem(
     if not content and file:
         content = f"Image-based problem: {file.filename}"
 
+    # テキストがあればAIの回答を生成
+    if text:
+        ai_answer = ai_service.generate_answer(text)
+
     title = content[:30].strip()
     if len(content) > 30:
         title += "..."
@@ -58,7 +64,8 @@ def upload_problem(
         title=title,
         content=content,
         content_type="image" if file else "text",
-        image_url=image_url_str
+        image_url=image_url_str,
+        answer=ai_answer
     )
     
     db.add(db_problem)
@@ -68,7 +75,8 @@ def upload_problem(
     response_data = {
         "message": "Problem uploaded successfully",
         "problem_id": db_problem.id,
-        "title": db_problem.title
+        "title": db_problem.title,
+        "answer": db_problem.answer
     }
     if filename:
         response_data["filename"] = filename

@@ -1,24 +1,20 @@
-"use client";
+import { Header } from "@/components/header"
+import { HeroSection } from "@/components/hero-section"
+import { FeaturesSection } from "@/components/features-section"
 
 export default function HomePage() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-6">
-      <h1 className="text-3xl font-bold mb-6">AI Math Solver</h1>
-
-      <div className="flex flex-col gap-4">
-        <a
-          href="/problems"
-          className="px-6 py-3 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition"
-        >
-          問題一覧へ
-        </a>
-        <a
-          href="/upload"
-          className="px-6 py-3 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition"
-        >
-          アップロードへ
-        </a>
-      </div>
-    </main>
-  );
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1">
+        <HeroSection />
+        <FeaturesSection />
+      </main>
+      <footer className="border-t border-border py-8">
+        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+          <p>© 2025 AI 数学ソルバー. すべての権利を保有します。</p>
+        </div>
+      </footer>
+    </div>
+  )
 }

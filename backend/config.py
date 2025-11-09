@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     openrouter_ai_model: str
     
     class Config:
-        env_file = "backend/.env"
+        env_file = "backend/.env.local"
         case_sensitive = False
 
 @lru_cache()

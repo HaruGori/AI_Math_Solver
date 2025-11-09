@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { BookOpen, Plus } from "lucide-react"
+import UserAuthForm from "@/components/user-auth-form"
 
 export function Header() {
   return (
@@ -35,12 +36,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button asChild variant="default" size="sm" className="gap-2">
-            <Link href="/upload">
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">新しい問題</span>
-            </Link>
-          </Button>
+          <UserAuthForm />
         </div>
       </div>
     </header>

@@ -30,7 +30,7 @@ AI Math Solverは、ユーザーが数学の問題を解決し、管理するの
 -   **言語:** Python
 -   **フレームワーク:** FastAPI
 -   **依存関係管理:** `uv`
--   **データベース ORM:** Prisma (Neonと連携)
+-   **データベース ORM:** SQLAlchemy (Neonと連携)
 -   **AIサービス:** 問題解決のための統合AIサービス (`backend/services/ai_service.py`を参照)
 
 #### フロントエンド

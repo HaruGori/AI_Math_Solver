@@ -13,174 +13,173 @@ AI Math Solverは、ユーザーが数学の問題を解決・管理するため
 
 ## 詳細なプロジェクト情報
 
-# AI Math Solver Project Overview
+### AI Math Solver プロジェクト概要
 
-This document provides an overview of the AI Math Solver project, detailing its purpose, technology stack, development guidelines, and coding conventions.
+このドキュメントは、AI Math Solverプロジェクトの概要を提供し、その目的、技術スタック、開発ガイドライン、およびコーディング規約を詳述します。
 
-## Project Purpose
+### プロジェクトの目的
 
-The AI Math Solver is an application designed to help users solve and manage mathematical problems. Users can upload problems via photos or text, receive detailed explanations, and organize their problems using tags for easy retrieval.
+AI Math Solverは、ユーザーが数学の問題を解決し、管理するのを助けるために設計されたアプリケーションです。ユーザーは写真やテキストで問題をアップロードし、詳細な説明を受け取り、タグを使用して問題を簡単に検索できるように整理できます。
 
-## Architecture and Technology Stack
+### アーキテクチャと技術スタック
 
-This project is structured as a monorepo containing both a frontend and a backend application.
+このプロジェクトは、フロントエンドとバックエンドの両方のアプリケーションを含むモノレポとして構成されています。
 
-### Backend
+#### バックエンド
 
-- **Language:** Python  
-- **Framework:** FastAPI  
-- **Dependency Management:** `uv`  
-- **Database ORM:** Prisma (used with Neon)  
-- **AI Services:** Integrated AI services for problem-solving (see `backend/services/ai_service.py`)  
+-   **言語:** Python
+-   **フレームワーク:** FastAPI
+-   **依存関係管理:** `uv`
+-   **データベース ORM:** Prisma (Neonと連携)
+-   **AIサービス:** 問題解決のための統合AIサービス (`backend/services/ai_service.py`を参照)
 
-### Frontend
+#### フロントエンド
 
-- **Framework:** Next.js  
-- **Library:** React  
-- **Styling:** TailwindCSS  
-- **Authentication:** Auth.js  
-- **Linting & Formatting:** Biome  
+-   **フレームワーク:** Next.js
+-   **ライブラリ:** React
+-   **スタイリング:** TailwindCSS
+-   **認証:** Auth.js
+-   **リンティング & フォーマット:** Biome
 
-### Shared/External Services
+#### 共有/外部サービス
 
-- **Database:** Neon (PostgreSQL compatible)  
-- **Image Storage:** Vercel Blob  
-- **Deployment:**  
-  - Frontend: Vercel  
-  - Backend: Railway  
+-   **データベース:** Neon (PostgreSQL互換)
+-   **画像ストレージ:** Vercel Blob
+-   **デプロイ:**
+    -   フロントエンド: Vercel
+    -   バックエンド: Railway
 
-## Building and Running
+### ビルドと実行
 
-### Backend Setup and Execution
+#### バックエンドのセットアップと実行
 
-1. **Install `uv`:**  
-   If you don't have `uv` installed, you can install it via pip:
-   ```bash
-   pip install uv
-   ```
+1.  **`uv`のインストール:**
+    `uv`がインストールされていない場合、pip経由でインストールできます。
+    ```bash
+    pip install uv
+    ```
 
-2. **Navigate to the backend directory:**
-   ```bash
-   cd backend/
-   ```
+2.  **バックエンドディレクトリへ移動:**
+    ```bash
+    cd backend/
+    ```
 
-3. **Install dependencies:**  
-   This will create a virtual environment and install all required packages.
-   ```bash
-   uv sync
-   ```
+3.  **依存関係のインストール:**
+    これにより、仮想環境が作成され、必要なすべてのパッケージがインストールされます。
+    ```bash
+    uv sync
+    ```
 
-4. **Activate the virtual environment:**
-   ```bash
-   source .venv/bin/activate
-   ```
+4.  **仮想環境のアクティブ化:**
+    ```bash
+    source .venv/bin/activate
+    ```
 
-5. **Run the development server:**
-   ```bash
-   uvicorn backend.main:app --reload --port 8000
-   ```
-   The backend server will be accessible at `http://127.0.0.1:8000`.
+5.  **開発サーバーの実行:**
+    ```bash
+    uvicorn backend.main:app --reload --port 8000
+    ```
+    バックエンドサーバーは `http://127.0.0.1:8000` でアクセス可能になります。
 
-### Frontend Setup and Execution
+#### フロントエンドのセットアップと実行
 
-1. **Navigate to the frontend directory:**
-   ```bash
-   cd frontend/
-   ```
+1.  **フロントエンドディレクトリへ移動:**
+    ```bash
+    cd frontend/
+    ```
 
-2. **Install dependencies:**  
-   This project uses `pnpm`.
-   ```bash
-   pnpm install
-   ```
+2.  **依存関係のインストール:**
+    このプロジェクトでは `pnpm` を使用します。
+    ```bash
+    pnpm install
+    ```
 
-3. **Run the development server:**
-   ```bash
-   pnpm dev
-   ```
-   The frontend development server will typically run on `http://localhost:3000`.
+3.  **開発サーバーの実行:**
+    ```bash
+    pnpm dev
+    ```
+    フロントエンド開発サーバーは通常 `http://localhost:3001` で実行されます。
 
-## Development Conventions
+### 開発規約
 
-### Linting and Formatting (Frontend)
+#### リンティングとフォーマット (フロントエンド)
 
-The frontend uses [Biome](https://biomejs.dev/) for linting and formatting.
+フロントエンドはリンティングとフォーマットに [Biome](https://biomejs.dev/) を使用します。
 
-- **Lint:**
-  ```bash
-  pnpm run lint
-  ```
-- **Format:**
-  ```bash
-  pnpm run format
-  ```
-- **Lint and Format (combined):**
-  ```bash
-  pnpm run biome
-  ```
+-   **リント:**
+    ```bash
+    pnpm run lint
+    ```
+-   **フォーマット:**
+    ```bash
+    pnpm run format
+    ```
+-   **リントとフォーマット (結合):**
+    ```bash
+    pnpm run biome
+    ```
 
-### Pre-commit Hooks
+#### プリコミットフック
 
-The project utilizes `.husky` for managing Git pre-commit hooks, ensuring code quality and consistency before commits are made.
+プロジェクトはGitのプリコミットフックを管理するために `.husky` を利用し、コミットが行われる前にコードの品質と一貫性を保証します。
 
-## Coding Guidelines
+### コーディングガイドライン
 
-### General Rules (Frontend & Backend)
+#### 一般的なルール (フロントエンド & バックエンド)
 
-- **Naming Conventions:**
-  - Use `snake_case` for Python variables and functions.
-  - Use `camelCase` for JavaScript/TypeScript variables and functions.
-  - Use `PascalCase` for component and class names.
-- **Comments:**
-  - Write comments in Japanese where appropriate and helpful.
-  - Keep comments concise and relevant to the logic.
-- **File Structure:**
-  - Organize files by feature or domain.
-  - Place shared utilities in `utils` or `lib` directories.
+-   **命名規則:**
+    -   Pythonの変数と関数には `snake_case` を使用します。
+    -   JavaScript/TypeScriptの変数と関数には `camelCase` を使用します。
+    -   コンポーネント名とクラス名には `PascalCase` を使用します。
+-   **コメント:**
+    -   適切で役立つ場合は日本語でコメントを記述します。
+    -   コメントは簡潔でロジックに関連するものに保ちます。
+-   **ファイル構造:**
+    -   機能またはドメインごとにファイルを整理します。
+    -   共有ユーティリティは `utils` または `lib` ディレクトリに配置します。
 
-### Backend (FastAPI)
+#### バックエンド (FastAPI)
 
-- Use type annotations for all functions.
-- Prefer asynchronous functions (`async def`) for I/O operations.
-- Handle errors explicitly using `HTTPException`.
-- Centralize AI-related logic in `services/ai_service.py`.
+-   すべての関数に型アノテーションを使用します。
+-   I/O操作には非同期関数 (`async def`) を優先します。
+-   `HTTPException` を使用してエラーを明示的に処理します。
+-   AI関連のロジックは `services/ai_service.py` に集約します。
 
-### Frontend (Next.js)
+#### フロントエンド (Next.js)
 
-- Use TypeScript and define types for all components and functions.
-- Use `useState`, `useReducer`, or `useContext` appropriately for state management.
-- Centralize API calls in `lib/api.ts` and use SWR or similar for caching.
-- Use TailwindCSS utility classes with readability in mind.
+-   すべてのコンポーネントと関数にTypeScriptを使用し、型を定義します。
+-   状態管理には `useState`、`useReducer`、または `useContext` を適切に使用します。
+-   API呼び出しは `lib/api.ts` に集約し、キャッシュにはSWRなどを利用します。
+-   TailwindCSSユーティリティクラスは可読性を考慮して使用します。
 
-### Git Workflow
+### Gitワークフロー
 
-- **Branch Naming:** Use prefixes like `feature/`, `fix/`, `chore/`, etc.
-- **Commit Messages:** Follow Conventional Commits (e.g., `feat: add image upload feature`)
-- **Pull Requests:** A tool for automatic review on PR creation is under consideration.
+-   **ブランチ命名:** `feature/`、`fix/`、`chore/`などのプレフィックスを使用します。
+-   **コミットメッセージ:** Conventional Commitsに従います (例: `feat: add image upload feature`)
+-   **プルリクエスト:** PR作成時の自動レビューツールを検討中です。
 
-## Language and Output
+### 言語と出力
 
-- **Output Language:** All user-facing outputs should be in Japanese.
-- **Comment Language:** Comments in code should be written in Japanese where appropriate and helpful.
+-   **出力言語:** すべてのユーザー向け出力は日本語であるべきです。
+-   **コメント言語:** コード内のコメントは、適切で役立つ場合は日本語で記述されるべきです。
 
+### コミットメッセージガイドライン
 
-## Commit Message Guidelines
-
-To ensure clarity and consistency in version control, this project follows a structured commit message format using [Gitmoji](https://gitmoji.dev/). All commit messages must follow the pattern:
+バージョン管理の明確さと一貫性を確保するため、このプロジェクトは [Gitmoji](https://gitmoji.dev/) を使用した構造化されたコミットメッセージ形式に従います。すべてのコミットメッセージは以下のパターンに従う必要があります。
 
 ```
 ((gitmoji) message (#issue_number))
 ```
 
-### Format Details
+#### 形式の詳細
 
-- **gitmoji**: Select an appropriate emoji from [gitmoji.dev](https://gitmoji.dev/) that best represents the type of change.
-- **message**: Write a short, descriptive message in Japanese.
-- **issue_number**: Use the number from the related issue branch (e.g., `issue/5` → `#5`).
+-   **gitmoji**: 変更の種類を最もよく表す [gitmoji.dev](https://gitmoji.dev/) から適切な絵文字を選択します。
+-   **message**: 短く、説明的なメッセージを日本語で記述します。
+-   **issue_number**: 関連するissueブランチの番号を使用します (例: `issue/5` → `#5`)。
 
-### Example
+#### 例
 
-If you are working on branch `issue/5` and added a new feature, your commit message should be:
+`issue/5`ブランチで作業しており、新しい機能を追加した場合、コミットメッセージは次のようになります。
 
 ```
 ✨ 機能を追加 (#5)
@@ -188,37 +187,37 @@ If you are working on branch `issue/5` and added a new feature, your commit mess
 
 ---
 
-### Common Gitmoji Usage
+#### 一般的なGitmojiの使用法
 
 | Emoji | Code | Meaning | Example |
 |-------|------|---------|---------|
-| ✨ | `:sparkles:` | New feature | ✨ タグ機能を追加 (#12) |
-| 🐛 | `:bug:` | Bug fix | 🐛 数式表示のバグを修正 (#8) |
-| ♻️ | `:recycle:` | Refactoring | ♻️ AIサービスの構造をリファクタリング (#15) |
-| 📝 | `:memo:` | Documentation | 📝 READMEを更新 (#3) |
-| 🚀 | `:rocket:` | Deployment-related changes | 🚀 Railway設定を更新 (#20) |
-| ✅ | `:white_check_mark:` | Adding tests | ✅ 数式解析のテストを追加 (#7) |
-| 🔧 | `:wrench:` | Configuration changes | 🔧 Biome設定を調整 (#9) |
-| 🔥 | `:fire:` | Removing code or files | 🔥 不要なコンポーネントを削除 (#11) |
-| 💄 | `:lipstick:` | UI updates | 💄 ボタンのスタイルを調整 (#6) |
-| 🎨 | `:art:` | Code style improvements | 🎨 インデントと空白を修正 (#4) |
-| ⬆️ | `:arrow_up:` | Dependency upgrade | ⬆️ Prismaを最新バージョンに更新 (#13) |
-| ⬇️ | `:arrow_down:` | Dependency downgrade | ⬇️ FastAPIのバージョンを戻した (#14) |
-| 🐳 | `:whale:` | Docker-related changes | 🐳 Dockerfileを追加 (#18) |
-| 🧪 | `:test_tube:` | Experimental code | 🧪 数式分類の試験的ロジックを追加 (#21) |
-| 🚨 | `:rotating_light:` | Fixing linter errors | 🚨 Biomeの警告を修正 (#10) |
-| 📦 | `:package:` | Package-related changes | 📦 新しいライブラリを追加 (#16) |
-| 🔒 | `:lock:` | Security fixes | 🔒 認証処理の脆弱性を修正 (#19) |
-| 🗃️ | `:card_file_box:` | DB schema changes | 🗃️ Prismaスキーマを更新 (#22) |
-| 🧹 | `:broom:` | Code cleanup | 🧹 未使用コードを削除 (#23) |
-| 🕹️ | `:joystick:` | Feature toggle | 🕹️ 数式解析機能のトグルを追加 (#24) |
+| ✨ | `:sparkles:` | 新機能 | ✨ タグ機能を追加 (#12) |
+| 🐛 | `:bug:` | バグ修正 | 🐛 数式表示のバグを修正 (#8) |
+| ♻️ | `:recycle:` | リファクタリング | ♻️ AIサービスの構造をリファクタリング (#15) |
+| 📝 | `:memo:` | ドキュメンテーション | 📝 READMEを更新 (#3) |
+| 🚀 | `:rocket:` | デプロイ関連の変更 | 🚀 Railway設定を更新 (#20) |
+| ✅ | `:white_check_mark:` | テストの追加 | ✅ 数式解析のテストを追加 (#7) |
+| 🔧 | `:wrench:` | 設定変更 | 🔧 Biome設定を調整 (#9) |
+| 🔥 | `:fire:` | コードまたはファイルの削除 | 🔥 不要なコンポーネントを削除 (#11) |
+| 💄 | `:lipstick:` | UI更新 | 💄 ボタンのスタイルを調整 (#6) |
+| 🎨 | `:art:` | コードスタイルの改善 | 🎨 インデントと空白を修正 (#4) |
+| ⬆️ | `:arrow_up:` | 依存関係のアップグレード | ⬆️ Prismaを最新バージョンに更新 (#13) |
+| ⬇️ | `:arrow_down:` | 依存関係のダウングレード | ⬇️ FastAPIのバージョンを戻した (#14) |
+| 🐳 | `:whale:` | Docker関連の変更 | 🐳 Dockerfileを追加 (#18) |
+| 🧪 | `:test_tube:` | 実験的なコード | 🧪 数式分類の試験的ロジックを追加 (#21) |
+| 🚨 | `:rotating_light:` | リンターエラーの修正 | 🚨 Biomeの警告を修正 (#10) |
+| 📦 | `:package:` | パッケージ関連の変更 | 📦 新しいライブラリを追加 (#16) |
+| 🔒 | `:lock:` | セキュリティ修正 | 🔒 認証処理の脆弱性を修正 (#19) |
+| 🗃️ | `:card_file_box:` | DBスキーマ変更 | 🗃️ Prismaスキーマを更新 (#22) |
+| 🧹 | `:broom:` | コードクリーンアップ | 🧹 未使用コードを削除 (#23) |
+| 🕹️ | `:joystick:` | 機能トグル | 🕹️ 数式解析機能のトグルを追加 (#24) |
 
-### Notes
+### 注意事項
 
-- Commit messages should be written in **Japanese**.
-- Use **present tense** and keep messages concise.
-- If multiple changes are made, choose the most representative gitmoji.
-- For ambiguous cases, refer to [gitmoji.dev](https://gitmoji.dev/) for guidance.
+-   コミットメッセージは**日本語**で記述してください。
+-   **現在形**を使用し、メッセージは簡潔に保ってください。
+-   複数の変更が行われた場合は、最も代表的なgitmojiを選択してください。
+-   曖昧な場合は、[gitmoji.dev](https://gitmoji.dev/) を参照してください。
 
 ## ライセンス
 

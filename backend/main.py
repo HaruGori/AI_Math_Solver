@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from backend.config import get_settings
 from backend.database import engine, Base
@@ -23,6 +24,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 静的ファイルの配信設定
+app.mount("/static", StaticFiles(directory="backend/static"), name="static")
+
 
 @app.on_event("startup")
 def startup_event():

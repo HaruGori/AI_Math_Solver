@@ -1,13 +1,8 @@
-
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, UploadFile, File, HTTPException, Request
 import shutil
 import os
+import uuid
 from pathlib import Path
-from typing import Optional
-
-from backend import models, database
-from backend.services import ai_service
 
 router = APIRouter()
 
@@ -16,69 +11,36 @@ UPLOAD_DIR = Path("backend/static/images")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 @router.post("/upload")
-def upload_problem(
-    db: Session = Depends(database.get_db),
-    text: Optional[str] = Form(None),
-    file: Optional[UploadFile] = File(None)
+def upload_image(
+    request: Request,
+    file: UploadFile = File(...)
 ):
     """
-    画像またはテキスト、あるいはその両方をアップロードして新しい問題を作成する
+    画像をアップロードして、アクセス可能なURLを返す
     """
-    if not text and not file:
-        raise HTTPException(status_code=400, detail="Either text or a file must be provided.")
+    if not file:
+        raise HTTPException(status_code=400, detail="File must be provided.")
 
-    image_url_str = None
-    filename = None
-    ai_answer = None
+    # ファイル名の重複を防ぐためUUIDを使用
+    ext = os.path.splitext(file.filename)[1]
+    filename = f"{uuid.uuid4()}{ext}"
+    file_path = UPLOAD_DIR / filename
 
-    # ファイルが提供された場合の処理
-    if file:
-        # ファイル名が重複しないように処理 (例: uuidを追加)
-        # ここでは簡単のため、元のファイル名をそのまま使う
-        file_path = UPLOAD_DIR / file.filename
-        filename = file.filename
-        image_url_str = str(file_path)
-        
-        # ファイルを保存
-        try:
-            with file_path.open("wb") as buffer:
-                shutil.copyfileobj(file.file, buffer)
-        finally:
-            file.file.close()
+    # ファイルを保存
+    try:
+        with file_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save file: {str(e)}")
+    finally:
+        file.file.close()
 
-    # コンテンツとタイトルの決定
-    content = text if text else ""
-    if not content and file:
-        content = f"Image-based problem: {file.filename}"
+    # 絶対URLの構築
+    # request.base_url には末尾のスラッシュが含まれる
+    base_url = str(request.base_url)
+    image_url = f"{base_url}static/images/{filename}"
 
-    # テキストがあればAIの回答を生成
-    if text:
-        ai_answer = ai_service.generate_answer(text)
-
-    title = content[:30].strip()
-    if len(content) > 30:
-        title += "..."
-
-    # データベースに新しい問題を作成
-    db_problem = models.Problem(
-        title=title,
-        content=content,
-        content_type="image" if file else "text",
-        image_url=image_url_str,
-        answer=ai_answer
-    )
-    
-    db.add(db_problem)
-    db.commit()
-    db.refresh(db_problem)
-    
-    response_data = {
-        "message": "Problem uploaded successfully",
-        "problem_id": db_problem.id,
-        "title": db_problem.title,
-        "answer": db_problem.answer
+    return {
+        "url": image_url,
+        "filename": filename
     }
-    if filename:
-        response_data["filename"] = filename
-
-    return response_data

@@ -5,13 +5,19 @@ from backend.config import get_settings
 
 settings = get_settings()
 
-engine = create_engine(settings.database_url)
+engine = create_engine(
+    settings.database_url,
+    pool_size=5,
+    max_overflow=10,
+    pool_pre_ping=True,
+    echo=settings.database_echo,
+)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-# Dependency to get a DB session
+
 def get_db():
     db = SessionLocal()
     try:

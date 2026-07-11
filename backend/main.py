@@ -13,7 +13,7 @@ from backend.database import engine, Base
 from backend.routers import problems, upload, tags
 from backend.schemas.error import ErrorResponse
 from backend.services.ai_service import AIGenerationError
-from backend import models
+from backend.models import Problem, Tag
 
 logging.basicConfig(
     level=logging.INFO,
@@ -43,8 +43,16 @@ app.mount("/static", StaticFiles(directory="backend/static"), name="static")
 
 
 @app.on_event("startup")
-def startup_event():
-    Base.metadata.create_all(bind=engine)
+def run_migrations():
+    """アプリ起動時に未適用のマイグレーションを実行する"""
+    import os
+    from alembic.config import Config as AlembicConfig
+    from alembic.command import upgrade as alembic_upgrade
+
+    alembic_ini = os.path.join(os.path.dirname(__file__), "alembic.ini")
+    alembic_cfg = AlembicConfig(alembic_ini)
+    alembic_upgrade(alembic_cfg, "head")
+    logger.info("Alembic migrations applied successfully")
 
 
 # =============================================

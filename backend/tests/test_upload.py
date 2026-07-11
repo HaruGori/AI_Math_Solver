@@ -12,7 +12,7 @@ from fastapi.testclient import TestClient
 
 from backend.main import app
 from backend.database import Base, engine
-from backend import models
+from backend.models import Problem, Tag
 
 client = TestClient(app)
 

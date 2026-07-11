@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     # Database
     # Example for Neon: "postgresql://user:password@host:port/dbname"
     database_url: str
+    database_echo: bool = False
 
     # OpenRouter
     openrouter_api_key: str

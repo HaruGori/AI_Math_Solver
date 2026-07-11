@@ -1,21 +1,21 @@
 export interface Problem {
-  id: string
-  title: string
-  description: string
-  imageUrl?: string
-  tags: string[]
-  createdAt: Date
-  solution: string
+	id: string;
+	title: string;
+	description: string;
+	imageUrl?: string;
+	tags: string[];
+	createdAt: Date;
+	solution: string;
 }
 
 export const mockProblems: Problem[] = [
-  {
-    id: "1",
-    title: "二次方程式の解の公式",
-    description: "x² + 5x + 6 = 0 を解け",
-    tags: ["二次方程式", "代数"],
-    createdAt: new Date("2025-01-15"),
-    solution: `この二次方程式を解くために、解の公式を使用します。
+	{
+		id: "1",
+		title: "二次方程式の解の公式",
+		description: "x² + 5x + 6 = 0 を解け",
+		tags: ["二次方程式", "代数"],
+		createdAt: new Date("2025-01-15"),
+		solution: `この二次方程式を解くために、解の公式を使用します。
 
 **解の公式:**
 $$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
@@ -40,14 +40,14 @@ $$x_1 = \\frac{-5 + 1}{2} = \\frac{-4}{2} = -2$$
 $$x_2 = \\frac{-5 - 1}{2} = \\frac{-6}{2} = -3$$
 
 **答え:** $$x = -2, -3$$`,
-  },
-  {
-    id: "2",
-    title: "三角関数の基本",
-    description: "sin²θ + cos²θ = 1 を証明せよ",
-    tags: ["三角関数", "証明"],
-    createdAt: new Date("2025-01-14"),
-    solution: `この恒等式は三角関数の最も基本的な関係式です。単位円を使って証明します。
+	},
+	{
+		id: "2",
+		title: "三角関数の基本",
+		description: "sin²θ + cos²θ = 1 を証明せよ",
+		tags: ["三角関数", "証明"],
+		createdAt: new Date("2025-01-14"),
+		solution: `この恒等式は三角関数の最も基本的な関係式です。単位円を使って証明します。
 
 **証明:**
 
@@ -69,14 +69,14 @@ $$(\\cos\\theta)^2 + (\\sin\\theta)^2 = 1$$
 $$\\sin^2\\theta + \\cos^2\\theta = 1$$
 
 これで証明が完了しました。この恒等式は、すべての角度θに対して成り立ちます。`,
-  },
-  {
-    id: "3",
-    title: "微分の基本",
-    description: "f(x) = x³ + 2x² - 5x + 3 の導関数を求めよ",
-    tags: ["微分", "微積分"],
-    createdAt: new Date("2025-01-13"),
-    solution: `多項式の微分を行います。べき乗の微分公式を使用します。
+	},
+	{
+		id: "3",
+		title: "微分の基本",
+		description: "f(x) = x³ + 2x² - 5x + 3 の導関数を求めよ",
+		tags: ["微分", "微積分"],
+		createdAt: new Date("2025-01-13"),
+		solution: `多項式の微分を行います。べき乗の微分公式を使用します。
 
 **微分の公式:**
 $$(x^n)' = nx^{n-1}$$
@@ -95,14 +95,14 @@ $$f'(x) = 3x^2 + 4x - 5$$
 **答え:** $$f'(x) = 3x^2 + 4x - 5$$
 
 この導関数は、元の関数の各点における接線の傾きを表します。`,
-  },
-  {
-    id: "4",
-    title: "確率の基本問題",
-    description: "サイコロを2回振ったとき、出た目の和が7になる確率を求めよ",
-    tags: ["確率", "統計"],
-    createdAt: new Date("2025-01-12"),
-    solution: `確率の基本的な問題です。全事象と目的の事象を数えます。
+	},
+	{
+		id: "4",
+		title: "確率の基本問題",
+		description: "サイコロを2回振ったとき、出た目の和が7になる確率を求めよ",
+		tags: ["確率", "統計"],
+		createdAt: new Date("2025-01-12"),
+		solution: `確率の基本的な問題です。全事象と目的の事象を数えます。
 
 **ステップ1: 全事象を数える**
 サイコロを2回振るので、全事象の数は:
@@ -125,5 +125,5 @@ $$P(\\text{和が7}) = \\frac{\\text{目的の事象の数}}{\\text{全事象の
 **答え:** $$\\frac{1}{6}$$ (約16.67%)
 
 この確率は、サイコロの和の中で最も高い確率です。`,
-  },
-]
+	},
+];

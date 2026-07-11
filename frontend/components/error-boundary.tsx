@@ -111,7 +111,7 @@ export class ErrorBoundary extends Component<
 				return this.props.fallback;
 			}
 			return (
-				<ErrorFallback error={this.state.error} resetError={this.handleReset} />
+				<ErrorFallback error={this.state.error ?? new Error("Unknown error")} resetError={this.handleReset} />
 			);
 		}
 

@@ -26,6 +26,9 @@
 				"noUnusedImports": "off",
 				"noUnusedFunctionParameters": "off"
 			},
+			"style": {
+				"useImportType": "off"
+			},
 			"a11y": {
 				"noRedundantRoles": "off"
 			},
@@ -67,7 +70,7 @@
 		"enabled": true,
 		"actions": {
 			"source": {
-				"organizeImports": "on"
+				"organizeImports": "off"
 			}
 		}
 	}

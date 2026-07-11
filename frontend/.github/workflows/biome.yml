@@ -41,7 +41,7 @@ jobs:
         # --frozen-lockfile により lock ファイルと一致しない場合はエラー → CI の再現性を保証
 
       - name: Run Biome check
-        run: npx @biomejs/biome ci .
+        run: pnpm exec biome ci .
         working-directory: frontend
         # Biome によるコードチェックを実行
-        # --formatter github により、エラーが GitHub の UI 上にアノテーションとして表示される
+        # プロジェクトに固定されたバージョン（package.jsonのdevDependencies）を使用

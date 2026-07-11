@@ -40,8 +40,8 @@ jobs:
         # frontend ディレクトリで依存関係をインストール
         # --frozen-lockfile により lock ファイルと一致しない場合はエラー → CI の再現性を保証
 
-      - name: Run Biome lint
-        run: pnpm exec biome lint .
+      - name: Run Biome check
+        run: pnpm exec biome ci .
         working-directory: frontend
-        # Biome によるコードチェックを実行（lintのみ、フォーマットは別issueで対応予定）
+        # Biome によるコードチェックを実行（lint + フォーマット）
         # プロジェクトに固定されたバージョン（package.jsonのdevDependencies）を使用

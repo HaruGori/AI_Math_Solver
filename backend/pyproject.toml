@@ -15,6 +15,7 @@ dependencies = [
     "boto3",
     "openai",
     "alembic",
+    "tenacity",
 ]
 
 [tool.uv]

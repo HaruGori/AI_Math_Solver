@@ -68,7 +68,7 @@ def test_upload_image_invalid_extension():
     
     response = client.post("/api/upload", files=files)
     assert response.status_code == 400
-    assert "Unsupported file extension" in response.json()["detail"]
+    assert "Unsupported file extension" in response.json()["message"]
 
 def test_upload_image_invalid_mime_type():
     # 許可されていないMIMEタイプのテスト
@@ -77,7 +77,7 @@ def test_upload_image_invalid_mime_type():
     
     response = client.post("/api/upload", files=files)
     assert response.status_code == 400
-    assert "Only image files are allowed" in response.json()["detail"]
+    assert "Only image files are allowed" in response.json()["message"]
 
 def test_upload_image_exceeds_size():
     # 10MBを超えるファイルのアップロードテスト (10.1MB)
@@ -86,7 +86,7 @@ def test_upload_image_exceeds_size():
     
     response = client.post("/api/upload", files=files)
     assert response.status_code == 413
-    assert "File size exceeds the 10MB limit" in response.json()["detail"]
+    assert "File size exceeds the 10MB limit" in response.json()["message"]
 
 def test_create_problem_with_uploaded_image():
     # 1. まず画像をアップロードしてURLを取得

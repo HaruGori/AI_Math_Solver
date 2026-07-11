@@ -21,7 +21,13 @@
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "off",
-				"useUniqueElementIds": "off"
+				"useUniqueElementIds": "off",
+				"noUnusedVariables": "off",
+				"noUnusedImports": "off",
+				"noUnusedFunctionParameters": "off"
+			},
+			"a11y": {
+				"noRedundantRoles": "off"
 			},
 			"suspicious": {
 				"noArrayIndexKey": "off",

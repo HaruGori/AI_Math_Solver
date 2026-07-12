@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from backend.schemas.tag import TagSchema
 
@@ -8,7 +8,7 @@ from backend.schemas.tag import TagSchema
 class ProblemBase(BaseModel):
     title: str
     content: str
-    content_type: str = "text"
+    content_type: Literal["text", "image"] = "text"
     image_url: Optional[str] = None
 
 

@@ -16,6 +16,7 @@ export default function TagsPage() {
 	const [tagStats, setTagStats] = useState<TagWithCount[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [deletingTag, setDeletingTag] = useState<string | null>(null);
+	const [updatingTag, setUpdatingTag] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchTagStats = async () => {
@@ -55,6 +56,25 @@ export default function TagsPage() {
 
 		fetchTagStats();
 	}, []);
+
+	const handleUpdateTag = async (oldTag: string, newName: string) => {
+		setUpdatingTag(oldTag);
+		try {
+			const entry = tagStats.find((t) => t.tag === oldTag);
+			if (entry) {
+				await tagsApi.updateTag(entry.id, newName);
+				setTagStats((prev) =>
+					prev.map((t) =>
+						t.tag === oldTag ? { ...t, tag: newName } : t,
+					),
+				);
+			}
+		} catch (error) {
+			console.error("Failed to update tag:", error);
+		} finally {
+			setUpdatingTag(null);
+		}
+	};
 
 	const handleDeleteTag = async (tag: string) => {
 		if (!confirm(`"${tag}" を削除してもよろしいですか？`)) return;
@@ -109,7 +129,9 @@ export default function TagsPage() {
 									tag={tag}
 									count={count}
 									onDelete={handleDeleteTag}
+									onUpdate={handleUpdateTag}
 									isDeleting={deletingTag === tag}
+									isUpdating={updatingTag === tag}
 								/>
 							))}
 						</div>

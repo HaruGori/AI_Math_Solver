@@ -257,6 +257,20 @@ export const tagsApi = {
 		return response.json();
 	},
 
+	async updateTag(id: number, name: string): Promise<Tag> {
+		const response = await fetchWithRetry(
+			`${API_URL}/api/tags/${id}`,
+			{
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ name }),
+			},
+			DEFAULT_TIMEOUT,
+			0,
+		);
+		return response.json();
+	},
+
 	async deleteTag(id: number): Promise<void> {
 		await fetchWithRetry(
 			`${API_URL}/api/tags/${id}`,

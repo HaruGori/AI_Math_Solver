@@ -44,6 +44,34 @@ def test_delete_tag(client):
     assert "削除テスト" not in names
 
 
+def test_update_tag(client):
+    resp = client.post("/api/tags", json={"name": "更新前"})
+    tag_id = resp.json()["id"]
+
+    resp = client.put(f"/api/tags/{tag_id}", json={"name": "更新後"})
+    assert resp.status_code == 200
+    assert resp.json()["name"] == "更新後"
+
+    list_resp = client.get("/api/tags")
+    names = [t["name"] for t in list_resp.json()]
+    assert "更新前" not in names
+    assert "更新後" in names
+
+
+def test_update_nonexistent_tag(client):
+    resp = client.put("/api/tags/9999", json={"name": "nonexistent"})
+    assert resp.status_code == 404
+
+
+def test_update_tag_duplicate(client):
+    client.post("/api/tags", json={"name": "代数"})
+    tag2 = client.post("/api/tags", json={"name": "幾何"}).json()
+
+    resp = client.put(f"/api/tags/{tag2['id']}", json={"name": "代数"})
+    assert resp.status_code == 400
+    assert "already exists" in resp.json()["message"].lower()
+
+
 def test_delete_nonexistent_tag(client):
     resp = client.delete("/api/tags/9999")
     assert resp.status_code == 404

@@ -1,6 +1,19 @@
 "use client";
 
 import {
+	ArrowLeft,
+	Calendar,
+	Edit3,
+	Loader2,
+	Sparkles,
+	Trash2,
+} from "lucide-react";
+import Link from "next/link";
+import { notFound, useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Header } from "@/components/header";
+import { SolutionDisplay } from "@/components/solution-display";
+import {
 	AlertDialog,
 	AlertDialogAction,
 	AlertDialogCancel,
@@ -11,18 +24,12 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Calendar, Edit3, Loader2, Sparkles, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { notFound, useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Header } from "@/components/header";
-import { SolutionDisplay } from "@/components/solution-display";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { type Problem, problemsApi } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { type Problem, problemsApi } from "@/lib/api";
 
 export default function ProblemDetailPage() {
 	const { toast } = useToast();
@@ -199,7 +206,9 @@ export default function ProblemDetailPage() {
 										</AlertDialogTrigger>
 										<AlertDialogContent>
 											<AlertDialogHeader>
-												<AlertDialogTitle>問題を削除しますか？</AlertDialogTitle>
+												<AlertDialogTitle>
+													問題を削除しますか？
+												</AlertDialogTitle>
 												<AlertDialogDescription>
 													「{problem.title}」を削除してもよろしいですか？
 													この操作は元に戻せません。

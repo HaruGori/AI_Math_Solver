@@ -14,8 +14,8 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { problemsApi, tagsApi } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { problemsApi, tagsApi } from "@/lib/api";
 
 interface TagWithCount {
 	id: number;
@@ -145,9 +145,7 @@ export default function TagsPage() {
 									tag={tag}
 									count={count}
 									onDelete={(t) => setConfirmTag(t)}
-									onUpdate={handleUpdateTag}
 									isDeleting={deletingTag === tag}
-									isUpdating={updatingTag === tag}
 								/>
 							))}
 							<AlertDialog

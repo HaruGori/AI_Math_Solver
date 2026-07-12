@@ -165,8 +165,8 @@ importers:
         specifier: ^0.9.9
         version: 0.9.9(@types/react-dom@18.3.7(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       zod:
-        specifier: 3.25.67
-        version: 3.25.67
+        specifier: 4.4.3
+        version: 4.4.3
     devDependencies:
       '@biomejs/biome':
         specifier: 2.2.4
@@ -2613,8 +2613,8 @@ packages:
   xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
 
-  zod@3.25.67:
-    resolution: {integrity: sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==}
+  zod@4.4.3:
+    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
 
 snapshots:
 
@@ -4740,4 +4740,4 @@ snapshots:
 
   xmlchars@2.2.0: {}
 
-  zod@3.25.67: {}
+  zod@4.4.3: {}

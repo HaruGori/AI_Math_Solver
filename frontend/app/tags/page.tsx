@@ -64,9 +64,7 @@ export default function TagsPage() {
 			if (entry) {
 				await tagsApi.updateTag(entry.id, newName);
 				setTagStats((prev) =>
-					prev.map((t) =>
-						t.tag === oldTag ? { ...t, tag: newName } : t,
-					),
+					prev.map((t) => (t.tag === oldTag ? { ...t, tag: newName } : t)),
 				);
 			}
 		} catch (error) {

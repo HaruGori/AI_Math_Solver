@@ -3,6 +3,7 @@
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+// biome-ignore lint/suspicious/noShadowRestrictedNames: Next.js convention
 export default function GlobalError({
 	error,
 	reset,

@@ -12,6 +12,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 
+// biome-ignore lint/suspicious/noShadowRestrictedNames: Next.js convention
 export default function Error({
 	error,
 	reset,

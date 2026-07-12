@@ -280,27 +280,3 @@ export const uploadApi = {
 		return response.json();
 	},
 };
-
-export const ocrApi = {
-	async extractText(file: File): Promise<{ text: string; filename: string }> {
-		const formData = new FormData();
-		formData.append("file", file);
-
-		const response = await fetchWithRetry(
-			`${API_URL}/api/ocr`,
-			{
-				method: "POST",
-				body: formData,
-			},
-			DEFAULT_TIMEOUT,
-			0,
-		);
-		if (!response.ok)
-			throw new ApiError(
-				response.status,
-				"OCR_FAILED",
-				"Failed to extract text",
-			);
-		return response.json();
-	},
-};

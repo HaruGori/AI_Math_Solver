@@ -91,6 +91,22 @@ jobs:
       - name: Build images
         run: docker compose build
 
+      - name: Scan backend image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ai-math-backend:ci
+          format: table
+          exit-code: 1
+          severity: CRITICAL,HIGH
+
+      - name: Scan frontend image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ai-math-frontend:ci
+          format: table
+          exit-code: 1
+          severity: CRITICAL,HIGH
+
       - name: Start services
         run: docker compose up -d
 

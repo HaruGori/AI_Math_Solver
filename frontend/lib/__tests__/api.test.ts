@@ -1,12 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 
 const RETRY_TIMEOUT = 25000;
+
 import {
 	ApiError,
 	type CreateProblemData,
-	type UpdateProblemData,
 	problemsApi,
 	tagsApi,
+	type UpdateProblemData,
 	uploadApi,
 } from "@/lib/api";
 
@@ -126,7 +127,10 @@ describe("uploadApi", () => {
 	});
 
 	it("uploadImage sends POST with FormData", async () => {
-		vi.stubGlobal("fetch", mockFetch(200, { url: "/img.png", filename: "img.png" }));
+		vi.stubGlobal(
+			"fetch",
+			mockFetch(200, { url: "/img.png", filename: "img.png" }),
+		);
 		const file = new File(["dummy"], "test.png", { type: "image/png" });
 		const result = await uploadApi.uploadImage(file);
 		expect(result.url).toBe("/img.png");
@@ -140,42 +144,70 @@ describe("retry logic", () => {
 	});
 
 	it("retries GET on 429", async () => {
-		const fetch429 = vi.fn()
-			.mockResolvedValueOnce({ ok: false, status: 429, json: () => Promise.resolve({}) })
-			.mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve([]) });
+		const fetch429 = vi
+			.fn()
+			.mockResolvedValueOnce({
+				ok: false,
+				status: 429,
+				json: () => Promise.resolve({}),
+			})
+			.mockResolvedValueOnce({
+				ok: true,
+				status: 200,
+				json: () => Promise.resolve([]),
+			});
 		vi.stubGlobal("fetch", fetch429);
 		const result = await problemsApi.getProblem(1);
 		expect(fetch429).toHaveBeenCalledTimes(2);
 	});
 
 	it("does NOT retry POST on 429", async () => {
-		const fetch429 = vi.fn()
-			.mockResolvedValue({ ok: false, status: 429, json: () => Promise.resolve({ error: "RATE_LIMIT", message: "too many" }) });
+		const fetch429 = vi.fn().mockResolvedValue({
+			ok: false,
+			status: 429,
+			json: () => Promise.resolve({ error: "RATE_LIMIT", message: "too many" }),
+		});
 		vi.stubGlobal("fetch", fetch429);
 		await expect(tagsApi.createTag("test")).rejects.toThrow(ApiError);
 		expect(fetch429).toHaveBeenCalledTimes(1);
 	});
 
 	it("retries GET on 503", async () => {
-		const fetch503 = vi.fn()
-			.mockResolvedValueOnce({ ok: false, status: 503, json: () => Promise.resolve({}) })
-			.mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve({ id: 1 }) });
+		const fetch503 = vi
+			.fn()
+			.mockResolvedValueOnce({
+				ok: false,
+				status: 503,
+				json: () => Promise.resolve({}),
+			})
+			.mockResolvedValueOnce({
+				ok: true,
+				status: 200,
+				json: () => Promise.resolve({ id: 1 }),
+			});
 		vi.stubGlobal("fetch", fetch503);
 		const result = await problemsApi.getProblem(1);
 		expect(fetch503).toHaveBeenCalledTimes(2);
 	});
 
 	it("throws ApiError on 404", async () => {
-		vi.stubGlobal("fetch", mockFetch(404, { error: "NOT_FOUND", message: "not found" }));
+		vi.stubGlobal(
+			"fetch",
+			mockFetch(404, { error: "NOT_FOUND", message: "not found" }),
+		);
 		await expect(problemsApi.getProblem(999)).rejects.toThrow(ApiError);
 	});
 
 	it("throws TIMEOUT on abort", async () => {
 		const abortFetch = vi.fn().mockImplementation(
-			() => new Promise((_, reject) => {
-				const error = new DOMException("The operation was aborted", "AbortError");
-				reject(error);
-			}),
+			() =>
+				new Promise((_, reject) => {
+					const error = new DOMException(
+						"The operation was aborted",
+						"AbortError",
+					);
+					reject(error);
+				}),
 		);
 		vi.stubGlobal("fetch", abortFetch);
 		await expect(problemsApi.getProblem(1)).rejects.toMatchObject({
@@ -183,12 +215,17 @@ describe("retry logic", () => {
 		});
 	});
 
-	it("throws NETWORK_ERROR on fetch failure", async () => {
-		const networkFetch = vi.fn()
-			.mockRejectedValue(new TypeError("Failed to fetch"));
-		vi.stubGlobal("fetch", networkFetch);
-		await expect(problemsApi.getProblem(1)).rejects.toMatchObject({
-			code: "NETWORK_ERROR",
-		});
-	}, RETRY_TIMEOUT);
+	it(
+		"throws NETWORK_ERROR on fetch failure",
+		async () => {
+			const networkFetch = vi
+				.fn()
+				.mockRejectedValue(new TypeError("Failed to fetch"));
+			vi.stubGlobal("fetch", networkFetch);
+			await expect(problemsApi.getProblem(1)).rejects.toMatchObject({
+				code: "NETWORK_ERROR",
+			});
+		},
+		RETRY_TIMEOUT,
+	);
 });

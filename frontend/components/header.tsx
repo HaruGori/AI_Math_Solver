@@ -45,11 +45,7 @@ export function Header() {
 					<UserAuthForm />
 					<Sheet>
 						<SheetTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="md:hidden"
-							>
+							<Button variant="ghost" size="icon" className="md:hidden">
 								<Menu className="h-5 w-5" />
 							</Button>
 						</SheetTrigger>

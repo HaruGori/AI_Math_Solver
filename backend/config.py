@@ -11,6 +11,10 @@ class Settings(BaseSettings):
     openrouter_api_key: str
     openrouter_ai_model: str
 
+    # CORS
+    # カンマ区切りで複数指定可。デフォルトは全許可（開発用）
+    cors_origins: str = "*"
+
     # AI リトライ設定
     ai_max_retries: int = 3
     ai_retry_base_delay: float = 1.0

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Calendar } from "lucide-react";
+import { ArrowLeft, Calendar, Edit3, Loader2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import { SolutionDisplay } from "@/components/solution-display";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import { type Problem, problemsApi } from "@/lib/api";
 
 export default function ProblemDetailPage() {
@@ -17,6 +18,10 @@ export default function ProblemDetailPage() {
 	const [problem, setProblem] = useState<Problem | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [notFoundError, setNotFoundError] = useState(false);
+	const [isGenerating, setIsGenerating] = useState(false);
+	const [isEditing, setIsEditing] = useState(false);
+	const [editText, setEditText] = useState("");
+	const [isSaving, setIsSaving] = useState(false);
 
 	useEffect(() => {
 		const fetchProblem = async () => {
@@ -24,6 +29,7 @@ export default function ProblemDetailPage() {
 				setIsLoading(true);
 				const data = await problemsApi.getProblem(Number(id));
 				setProblem(data);
+				setEditText(data.answer || "");
 			} catch (error) {
 				console.error("[v0] Error fetching problem:", error);
 				setNotFoundError(true);
@@ -34,6 +40,46 @@ export default function ProblemDetailPage() {
 
 		fetchProblem();
 	}, [id]);
+
+	const handleGenerate = async () => {
+		if (!problem) return;
+		setIsGenerating(true);
+		try {
+			const { answer } = await problemsApi.generateAnswer(problem.id);
+			setProblem({ ...problem, answer });
+			setEditText(answer);
+		} catch (error) {
+			console.error("Failed to generate solution:", error);
+		} finally {
+			setIsGenerating(false);
+		}
+	};
+
+	const handleStartEdit = () => {
+		setEditText(problem?.answer || "");
+		setIsEditing(true);
+	};
+
+	const handleCancelEdit = () => {
+		setIsEditing(false);
+		setEditText(problem?.answer || "");
+	};
+
+	const handleSaveEdit = async () => {
+		if (!problem) return;
+		setIsSaving(true);
+		try {
+			const updated = await problemsApi.updateProblem(problem.id, {
+				answer: editText,
+			});
+			setProblem(updated);
+			setIsEditing(false);
+		} catch (error) {
+			console.error("Failed to update solution:", error);
+		} finally {
+			setIsSaving(false);
+		}
+	};
 
 	if (notFoundError) {
 		notFound();
@@ -113,7 +159,82 @@ export default function ProblemDetailPage() {
 							</CardContent>
 						</Card>
 
-						{problem.answer && <SolutionDisplay solution={problem.answer} />}
+						{problem.answer && !isEditing && (
+							<div className="relative">
+								<SolutionDisplay solution={problem.answer} />
+								<Button
+									variant="outline"
+									size="sm"
+									className="absolute top-4 right-4 gap-2"
+									onClick={handleStartEdit}
+								>
+									<Edit3 className="h-4 w-4" />
+									編集
+								</Button>
+							</div>
+						)}
+
+						{isEditing && (
+							<Card className="border-primary/20">
+								<CardHeader>
+									<CardTitle className="flex items-center gap-2 text-xl">
+										<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+											<Sparkles className="h-4 w-4" />
+										</div>
+										AI生成の解説（編集中）
+									</CardTitle>
+								</CardHeader>
+								<CardContent className="space-y-4">
+									<Textarea
+										value={editText}
+										onChange={(e) => setEditText(e.target.value)}
+										className="min-h-[200px] font-mono text-sm"
+									/>
+									<div className="flex gap-2 justify-end">
+										<Button
+											variant="outline"
+											onClick={handleCancelEdit}
+											disabled={isSaving}
+										>
+											キャンセル
+										</Button>
+										<Button onClick={handleSaveEdit} disabled={isSaving}>
+											{isSaving ? (
+												<>
+													<Loader2 className="h-4 w-4 mr-2 animate-spin" />
+													保存中...
+												</>
+											) : (
+												"保存"
+											)}
+										</Button>
+									</div>
+								</CardContent>
+							</Card>
+						)}
+
+						{!problem.answer && !isEditing && (
+							<div className="flex justify-center">
+								<Button
+									size="lg"
+									className="gap-2"
+									onClick={handleGenerate}
+									disabled={isGenerating}
+								>
+									{isGenerating ? (
+										<>
+											<Loader2 className="h-5 w-5 animate-spin" />
+											解説を生成中...
+										</>
+									) : (
+										<>
+											<Sparkles className="h-5 w-5" />
+											AIで解説を生成
+										</>
+									)}
+								</Button>
+							</div>
+						)}
 					</div>
 				</div>
 			</main>

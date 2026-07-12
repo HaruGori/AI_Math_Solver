@@ -32,6 +32,13 @@ export interface CreateProblemData {
 	tag_ids: number[];
 }
 
+export interface UpdateProblemData {
+	title?: string;
+	content?: string;
+	answer?: string;
+	tag_ids?: number[];
+}
+
 export class ApiError extends Error {
 	status: number;
 	code: string;
@@ -194,10 +201,7 @@ export const problemsApi = {
 		return response.json();
 	},
 
-	async updateProblem(
-		id: number,
-		data: Partial<CreateProblemData>,
-	): Promise<Problem> {
+	async updateProblem(id: number, data: UpdateProblemData): Promise<Problem> {
 		const response = await fetchWithRetry(
 			`${API_URL}/api/problems/${id}`,
 			{

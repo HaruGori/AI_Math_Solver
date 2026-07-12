@@ -79,4 +79,5 @@ Triggered on push/PR to `main`. Three parallel jobs:
 2. During work, log every command, its output, your reasoning, choices made, and why. This goes into the PR body later.
 3. After implementation, create a PR.
 4. After creating the PR, self-review for **redundancy, performance, test coverage, and readability**.
-5. If no issues remain, merge the PR and close the corresponding issue.
+5. **Never merge if CI fails.** Wait for CI to pass completely. If it fails, fix the issue first, then re-review.
+6. If no issues remain and CI is green, merge the PR and close the corresponding issue.

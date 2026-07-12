@@ -1,6 +1,6 @@
 from backend.schemas.error import ErrorResponse
 from backend.schemas.problem import ProblemBase, ProblemCreate, ProblemUpdate, ProblemSchema, ProblemList
-from backend.schemas.tag import TagBase, TagCreate, TagSchema
+from backend.schemas.tag import TagBase, TagCreate, TagSchema, TagUpdate
 
 __all__ = [
     "ErrorResponse",
@@ -12,4 +12,5 @@ __all__ = [
     "TagBase",
     "TagCreate",
     "TagSchema",
+    "TagUpdate",
 ]

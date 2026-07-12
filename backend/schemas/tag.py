@@ -10,6 +10,10 @@ class TagCreate(TagBase):
     pass
 
 
+class TagUpdate(BaseModel):
+    name: str
+
+
 class TagSchema(TagBase):
     id: int
 

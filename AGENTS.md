@@ -81,6 +81,12 @@ Triggered after CI passes on `main`. Two parallel jobs:
 
 Requires repo secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `RAILWAY_TOKEN`, `RAILWAY_SERVICE_ID`.
 
+## Dependabot (`.github/dependabot.yml`)
+
+- **backend** (`pip`): weekly, label `dependencies` + `backend`
+- **frontend** (`npm`): weekly, label `dependencies` + `frontend`, versioning-strategy: increase
+- **GitHub Actions**: monthly, label `dependencies` + `ci`
+
 ## Issue workflow
 
 1. Branch name: `feature/<issue_number>`. Create from the current branch and start working.

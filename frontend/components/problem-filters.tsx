@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
@@ -10,6 +10,7 @@ interface ProblemFiltersProps {
 	onTagFilter: (tag: string | null) => void;
 	availableTags: string[];
 	selectedTag: string | null;
+	initialSearch?: string;
 }
 
 export function ProblemFilters({
@@ -17,8 +18,13 @@ export function ProblemFilters({
 	onTagFilter,
 	availableTags,
 	selectedTag,
+	initialSearch,
 }: ProblemFiltersProps) {
-	const [search, setSearch] = useState("");
+	const [search, setSearch] = useState(initialSearch || "");
+
+	useEffect(() => {
+		setSearch(initialSearch || "");
+	}, [initialSearch]);
 
 	const handleSearchChange = (value: string) => {
 		setSearch(value);

@@ -9,7 +9,9 @@
 		"biome": "biome check --write .",
 		"dev": "AUTH_URL=http://localhost:3001 next dev --port 3001",
 		"build": "next build",
-		"start": "next start"
+		"start": "next start",
+		"test": "vitest run",
+		"test:watch": "vitest"
 	},
 	"keywords": [],
 	"author": "",
@@ -73,12 +75,18 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4",
 		"@tailwindcss/postcss": "^4.1.9",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^16.3.2",
+		"@testing-library/user-event": "^14.6.1",
 		"@types/node": "^22",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
+		"@vitejs/plugin-react": "^6.0.3",
+		"jsdom": "^29.1.1",
 		"postcss": "^8.5",
 		"tailwindcss": "^4.1.9",
 		"tw-animate-css": "1.3.3",
-		"typescript": "^5"
+		"typescript": "^5",
+		"vitest": "^4.1.10"
 	}
 }

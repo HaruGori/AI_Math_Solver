@@ -1,18 +1,39 @@
 "use client";
 
-import { ArrowLeft, Calendar, Edit3, Loader2, Sparkles } from "lucide-react";
+import {
+	ArrowLeft,
+	Calendar,
+	Edit3,
+	Loader2,
+	Sparkles,
+	Trash2,
+} from "lucide-react";
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Header } from "@/components/header";
 import { SolutionDisplay } from "@/components/solution-display";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { type Problem, problemsApi } from "@/lib/api";
 
 export default function ProblemDetailPage() {
+	const { toast } = useToast();
+	const router = useRouter();
 	const params = useParams();
 	const id = params.id as string;
 	const [problem, setProblem] = useState<Problem | null>(null);
@@ -22,6 +43,8 @@ export default function ProblemDetailPage() {
 	const [isEditing, setIsEditing] = useState(false);
 	const [editText, setEditText] = useState("");
 	const [isSaving, setIsSaving] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
 	useEffect(() => {
 		const fetchProblem = async () => {
@@ -41,6 +64,26 @@ export default function ProblemDetailPage() {
 		fetchProblem();
 	}, [id]);
 
+	const handleDelete = async () => {
+		if (!problem) return;
+		setIsDeleting(true);
+		try {
+			await problemsApi.deleteProblem(problem.id);
+			toast({ title: "問題を削除しました" });
+			router.push("/problems");
+		} catch (error) {
+			console.error("Failed to delete problem:", error);
+			toast({
+				title: "エラー",
+				description: "問題の削除に失敗しました。",
+				variant: "destructive",
+			});
+		} finally {
+			setIsDeleting(false);
+			setDeleteDialogOpen(false);
+		}
+	};
+
 	const handleGenerate = async () => {
 		if (!problem) return;
 		setIsGenerating(true);
@@ -48,8 +91,14 @@ export default function ProblemDetailPage() {
 			const { answer } = await problemsApi.generateAnswer(problem.id);
 			setProblem({ ...problem, answer });
 			setEditText(answer);
+			toast({ title: "解説を生成しました" });
 		} catch (error) {
 			console.error("Failed to generate solution:", error);
+			toast({
+				title: "エラー",
+				description: "解説の生成に失敗しました。",
+				variant: "destructive",
+			});
 		} finally {
 			setIsGenerating(false);
 		}
@@ -74,8 +123,14 @@ export default function ProblemDetailPage() {
 			});
 			setProblem(updated);
 			setIsEditing(false);
+			toast({ title: "解説を保存しました" });
 		} catch (error) {
 			console.error("Failed to update solution:", error);
+			toast({
+				title: "エラー",
+				description: "解説の保存に失敗しました。",
+				variant: "destructive",
+			});
 		} finally {
 			setIsSaving(false);
 		}
@@ -136,6 +191,40 @@ export default function ProblemDetailPage() {
 											))}
 										</div>
 									</div>
+									<AlertDialog
+										open={deleteDialogOpen}
+										onOpenChange={setDeleteDialogOpen}
+									>
+										<AlertDialogTrigger asChild>
+											<Button
+												variant="ghost"
+												size="icon"
+												className="text-muted-foreground hover:text-destructive"
+											>
+												<Trash2 className="h-4 w-4" />
+											</Button>
+										</AlertDialogTrigger>
+										<AlertDialogContent>
+											<AlertDialogHeader>
+												<AlertDialogTitle>
+													問題を削除しますか？
+												</AlertDialogTitle>
+												<AlertDialogDescription>
+													「{problem.title}」を削除してもよろしいですか？
+													この操作は元に戻せません。
+												</AlertDialogDescription>
+											</AlertDialogHeader>
+											<AlertDialogFooter>
+												<AlertDialogCancel>キャンセル</AlertDialogCancel>
+												<AlertDialogAction
+													onClick={handleDelete}
+													disabled={isDeleting}
+												>
+													{isDeleting ? "削除中..." : "削除"}
+												</AlertDialogAction>
+											</AlertDialogFooter>
+										</AlertDialogContent>
+									</AlertDialog>
 								</div>
 							</CardHeader>
 							<CardContent>

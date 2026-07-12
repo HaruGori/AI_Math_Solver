@@ -4,6 +4,17 @@ import { Tags } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Header } from "@/components/header";
 import { TagCard } from "@/components/tag-card";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 import { problemsApi, tagsApi } from "@/lib/api";
 
 interface TagWithCount {
@@ -13,10 +24,12 @@ interface TagWithCount {
 }
 
 export default function TagsPage() {
+	const { toast } = useToast();
 	const [tagStats, setTagStats] = useState<TagWithCount[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [deletingTag, setDeletingTag] = useState<string | null>(null);
 	const [updatingTag, setUpdatingTag] = useState<string | null>(null);
+	const [confirmTag, setConfirmTag] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchTagStats = async () => {
@@ -75,16 +88,21 @@ export default function TagsPage() {
 	};
 
 	const handleDeleteTag = async (tag: string) => {
-		if (!confirm(`"${tag}" を削除してもよろしいですか？`)) return;
 		setDeletingTag(tag);
 		try {
 			const entry = tagStats.find((t) => t.tag === tag);
 			if (entry) {
 				await tagsApi.deleteTag(entry.id);
 				setTagStats((prev) => prev.filter((t) => t.tag !== tag));
+				toast({ title: "タグを削除しました" });
 			}
 		} catch (error) {
 			console.error("Failed to delete tag:", error);
+			toast({
+				title: "エラー",
+				description: "タグの削除に失敗しました。",
+				variant: "destructive",
+			});
 		} finally {
 			setDeletingTag(null);
 		}
@@ -126,12 +144,37 @@ export default function TagsPage() {
 									key={tag}
 									tag={tag}
 									count={count}
-									onDelete={handleDeleteTag}
-									onUpdate={handleUpdateTag}
+									onDelete={(t) => setConfirmTag(t)}
 									isDeleting={deletingTag === tag}
-									isUpdating={updatingTag === tag}
 								/>
 							))}
+							<AlertDialog
+								open={!!confirmTag}
+								onOpenChange={(open) => {
+									if (!open) setConfirmTag(null);
+								}}
+							>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>タグを削除しますか？</AlertDialogTitle>
+										<AlertDialogDescription>
+											「{confirmTag}」を削除してもよろしいですか？
+											この操作は元に戻せません。
+										</AlertDialogDescription>
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel>キャンセル</AlertDialogCancel>
+										<AlertDialogAction
+											onClick={() => {
+												if (confirmTag) handleDeleteTag(confirmTag);
+												setConfirmTag(null);
+											}}
+										>
+											削除
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
 						</div>
 					)}
 				</div>

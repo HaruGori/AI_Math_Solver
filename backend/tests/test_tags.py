@@ -29,3 +29,23 @@ def test_list_tags_after_creation(client):
     names = [t["name"] for t in data]
     assert "微分積分" in names
     assert "確率" in names
+
+
+def test_delete_tag(client):
+    resp = client.post("/api/tags", json={"name": "削除テスト"})
+    assert resp.status_code == 201
+    tag_id = resp.json()["id"]
+
+    delete_resp = client.delete(f"/api/tags/{tag_id}")
+    assert delete_resp.status_code == 204
+
+    list_resp = client.get("/api/tags")
+    names = [t["name"] for t in list_resp.json()]
+    assert "削除テスト" not in names
+
+
+def test_delete_nonexistent_tag(client):
+    resp = client.delete("/api/tags/9999")
+    assert resp.status_code == 404
+    assert resp.json()["error"] == "HTTP_ERROR"
+    assert "not found" in resp.json()["message"].lower()

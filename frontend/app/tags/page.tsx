@@ -7,6 +7,7 @@ import { TagCard } from "@/components/tag-card";
 import { problemsApi, tagsApi } from "@/lib/api";
 
 interface TagWithCount {
+	id: number;
 	tag: string;
 	count: number;
 }
@@ -14,6 +15,7 @@ interface TagWithCount {
 export default function TagsPage() {
 	const [tagStats, setTagStats] = useState<TagWithCount[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [deletingTag, setDeletingTag] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchTagStats = async () => {
@@ -24,16 +26,24 @@ export default function TagsPage() {
 					problemsApi.getProblems({ limit: 1000 }),
 				]);
 
-				const stats = new Map<string, number>();
-				problemsData.problems.forEach((problem) => {
-					problem.tags.forEach((tag) => {
-						stats.set(tag.name, (stats.get(tag.name) || 0) + 1);
-					});
-				});
+				const tagMap = new Map<
+					string,
+					{ id: number; tag: string; count: number }
+				>();
+				for (const t of tags) {
+					tagMap.set(t.name, { id: t.id, tag: t.name, count: 0 });
+				}
 
-				const tagStatsArray = Array.from(stats.entries())
-					.map(([tag, count]) => ({ tag, count }))
-					.sort((a, b) => b.count - a.count);
+				for (const problem of problemsData.problems) {
+					for (const tag of problem.tags) {
+						const entry = tagMap.get(tag.name);
+						if (entry) entry.count++;
+					}
+				}
+
+				const tagStatsArray = Array.from(tagMap.values()).sort(
+					(a, b) => b.count - a.count,
+				);
 
 				setTagStats(tagStatsArray);
 			} catch (error) {
@@ -45,6 +55,22 @@ export default function TagsPage() {
 
 		fetchTagStats();
 	}, []);
+
+	const handleDeleteTag = async (tag: string) => {
+		if (!confirm(`"${tag}" を削除してもよろしいですか？`)) return;
+		setDeletingTag(tag);
+		try {
+			const entry = tagStats.find((t) => t.tag === tag);
+			if (entry) {
+				await tagsApi.deleteTag(entry.id);
+				setTagStats((prev) => prev.filter((t) => t.tag !== tag));
+			}
+		} catch (error) {
+			console.error("Failed to delete tag:", error);
+		} finally {
+			setDeletingTag(null);
+		}
+	};
 
 	return (
 		<div className="min-h-screen flex flex-col">
@@ -77,8 +103,14 @@ export default function TagsPage() {
 						</div>
 					) : (
 						<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-							{tagStats.map(({ tag, count }) => (
-								<TagCard key={tag} tag={tag} count={count} />
+							{tagStats.map(({ tag, count, id }) => (
+								<TagCard
+									key={tag}
+									tag={tag}
+									count={count}
+									onDelete={handleDeleteTag}
+									isDeleting={deletingTag === tag}
+								/>
 							))}
 						</div>
 					)}

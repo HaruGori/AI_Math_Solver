@@ -27,3 +27,14 @@ def create_tag(tag: TagCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_tag)
     return new_tag
+
+
+@router.delete("/tags/{tag_id}", status_code=204)
+def delete_tag(tag_id: int, db: Session = Depends(get_db)):
+    """タグを削除"""
+    tag = db.query(Tag).filter(Tag.id == tag_id).first()
+    if not tag:
+        raise HTTPException(status_code=404, detail="Tag not found")
+
+    db.delete(tag)
+    db.commit()

@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
@@ -21,6 +21,7 @@ export function ProblemFilters({
 	initialSearch,
 }: ProblemFiltersProps) {
 	const [search, setSearch] = useState(initialSearch || "");
+	const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
 	useEffect(() => {
 		setSearch(initialSearch || "");
@@ -28,8 +29,15 @@ export function ProblemFilters({
 
 	const handleSearchChange = (value: string) => {
 		setSearch(value);
-		onSearchChange(value);
+		if (debounceRef.current) clearTimeout(debounceRef.current);
+		debounceRef.current = setTimeout(() => onSearchChange(value), 300);
 	};
+
+	useEffect(() => {
+		return () => {
+			if (debounceRef.current) clearTimeout(debounceRef.current);
+		};
+	}, []);
 
 	return (
 		<div className="space-y-4">

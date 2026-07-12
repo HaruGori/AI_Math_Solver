@@ -104,6 +104,76 @@ AI Math Solverは、ユーザーが数学の問題を解決し、管理するの
     ```
     フロントエンド開発サーバーは通常 `http://localhost:3001` で実行されます。
 
+### Docker を使用したセットアップと実行
+
+Docker Compose を使用すると、バックエンド・フロントエンド・PostgreSQL を一括で起動できます。
+
+1.  **環境変数の設定:**
+    `.env.example` を `.env` にコピーし、必要な値を設定します。
+    ```bash
+    cp .env.example .env
+    ```
+
+2.  **本番用ビルドの起動:**
+    ```bash
+    docker compose up -d
+    ```
+    - バックエンド: `http://localhost:8001`
+    - フロントエンド: `http://localhost:3000`
+    - PostgreSQL: backendコンテナからの内部通信のみ（ホスト非公開）
+
+3.  **開発用（ホットリロード）の起動:**
+    ```bash
+    docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+    ```
+    コード変更が自動反映されます。
+
+4.  **コンテナの停止:**
+    ```bash
+    docker compose down -v
+    ```
+
+### 環境変数
+
+プロジェクトはルート、バックエンド、フロントエンドの3箇所で環境変数を管理します。
+
+#### ルート `.env`（Docker Compose用）
+
+| 変数名 | 必須 | 説明 |
+|--------|------|------|
+| `POSTGRES_PASSWORD` | 任意（既定値: `password`） | PostgreSQLのパスワード |
+| `OPENROUTER_API_KEY` | 必須 | OpenRouterのAPIキー（AI問題解決に使用） |
+| `OPENROUTER_AI_MODEL` | 任意（既定値: `minimax/minimax-m2:free`） | 使用するAIモデル |
+| `NEXTAUTH_SECRET` | 必須 | NextAuthの暗号化キー（`openssl rand -base64 32` で生成） |
+| `NEXTAUTH_URL` | 任意（既定値: `http://localhost:3000`） | 認証コールバックURL |
+
+#### バックエンド `backend/.env.local`
+
+`backend/.env.example` をコピーして作成します。
+
+| 変数名 | 必須 | 説明 |
+|--------|------|------|
+| `DATABASE_URL` | 必須 | Neon（PostgreSQL）の接続文字列 |
+| `OPENROUTER_API_KEY` | 必須 | OpenRouter APIキー |
+| `OPENROUTER_AI_MODEL` | 任意 | AIモデル指定 |
+| `AI_MAX_RETRIES` | 任意（既定値: 3） | AIリクエスト最大リトライ回数 |
+| `AI_RETRY_BASE_DELAY` | 任意（既定値: 1.0） | リトライ基本待機時間（秒） |
+| `AI_RETRY_MAX_DELAY` | 任意（既定値: 10.0） | リトライ最大待機時間（秒） |
+| `AI_TIMEOUT` | 任意（既定値: 30.0） | AIリクエストタイムアウト（秒） |
+
+#### フロントエンド `frontend/.env.local`
+
+`frontend/.env.example` をコピーして作成します。
+
+| 変数名 | 必須 | 説明 |
+|--------|------|------|
+| `NEXTAUTH_URL` | 必須 | 認証コールバックURL |
+| `NEXTAUTH_SECRET` | 必須 | NextAuthシークレットキー |
+| `NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN` | 必須 | Vercel Blobトークン（画像アップロード用） |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google認証を使用する場合 | Google OAuth認証情報 |
+| `NEXT_PUBLIC_API_TIMEOUT` | 任意（既定値: 30000） | APIリクエストタイムアウト（ms） |
+| `NEXT_PUBLIC_MAX_RETRIES` | 任意（既定値: 3） | APIリトライ回数 |
+
 ### 開発規約
 
 #### リンティングとフォーマット (フロントエンド)

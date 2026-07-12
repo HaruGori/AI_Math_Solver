@@ -71,7 +71,15 @@ Root `.env` supplies `POSTGRES_PASSWORD`, `OPENROUTER_API_KEY`, `NEXTAUTH_SECRET
 Triggered on push/PR to `main`. Three parallel jobs:
 1. **backend**: uv sync → `uv run python -m pytest tests/ -v`
 2. **frontend**: pnpm install → `pnpm exec biome ci .` → `pnpm test` → `pnpm build`
-3. **docker**: `docker compose build` → `docker compose up -d` → health checks → `docker compose down -v`
+3. **docker**: `docker compose build` + Trivy scan (report-only). Full health check (`up -d` → wait → verify) runs **only on push to main**.
+
+## CD pipeline (`.github/workflows/deploy.yml`)
+
+Triggered after CI passes on `main`. Two parallel jobs:
+1. **Vercel**: frontend deploy via Vercel CLI (`--prod`)
+2. **Railway**: backend deploy via Railway CLI
+
+Requires repo secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `RAILWAY_TOKEN`, `RAILWAY_SERVICE_ID`.
 
 ## Issue workflow
 

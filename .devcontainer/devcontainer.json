@@ -1,0 +1,39 @@
+{
+	"name": "AI Math Solver Dev",
+	"dockerComposeFile": [
+		"../docker-compose.yml",
+		"docker-compose.yml"
+	],
+	"service": "devcontainer",
+	"workspaceFolder": "/workspace",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.debugpy",
+				"charliermarsh.ruff",
+				"tamasfe.even-better-toml",
+				"dbaeumer.vscode-eslint",
+				"biomejs.biome",
+				"bradlc.vscode-tailwindcss",
+				"christian-kohler.path-intellisense",
+				"github.vscode-github-actions"
+			],
+			"settings": {
+				"editor.formatOnSave": true,
+				"editor.defaultFormatter": "biomejs.biome",
+				"[python]": {
+					"editor.defaultFormatter": "charliermarsh.ruff",
+					"editor.formatOnSave": true
+				},
+				"python.analysis.typeCheckingMode": "basic",
+				"files.associations": {
+					"*.css": "tailwindcss"
+				}
+			}
+		}
+	},
+	"forwardPorts": [3000, 8000, 8001],
+	"postCreateCommand": "cd /workspace/backend && uv sync && cd /workspace/frontend && pnpm install",
+	"remoteUser": "vscode"
+}

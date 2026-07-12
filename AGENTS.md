@@ -46,6 +46,9 @@ Root `.env` supplies `POSTGRES_PASSWORD`, `OPENROUTER_API_KEY`, `NEXTAUTH_SECRET
 - **TypeScript path alias**: `@/` → `frontend/`.
 - **shadcn/ui** components in `components/ui/` — regenerate via `pnpm dlx shadcn@latest add <name>`.
 
+### Dev Container
+`.devcontainer/` — open the repo root in VS Code/Cursor to auto-build and attach. Requires Docker Compose (db, backend, frontend also start via compose).
+
 ## Architecture notes
 
 - **Backend entrypoint**: `backend/main.py`. Alembic migrations run **on app startup** (`@app.on_event("startup")`), not via CLI.

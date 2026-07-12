@@ -1,0 +1,17 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity
+    environment:
+      DATABASE_URL: postgresql://ai_math:${POSTGRES_PASSWORD:-password}@db:5432/ai_math_solver
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_AI_MODEL: ${OPENROUTER_AI_MODEL:-minimax/minimax-m2:free}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-dummy-secret}
+      NEXTAUTH_URL: http://localhost:3000
+    depends_on:
+      db:
+        condition: service_healthy

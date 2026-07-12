@@ -1,7 +1,19 @@
-import { BookOpen, Plus } from "lucide-react";
+import { BookOpen, Menu } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import {
+	Sheet,
+	SheetContent,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet";
 import UserAuthForm from "@/components/user-auth-form";
+
+const navLinks = [
+	{ href: "/problems", label: "問題一覧" },
+	{ href: "/tags", label: "タグ管理" },
+	{ href: "/upload", label: "問題をアップロード" },
+];
 
 export function Header() {
 	return (
@@ -18,28 +30,44 @@ export function Header() {
 				</Link>
 
 				<nav className="hidden md:flex items-center gap-6">
-					<Link
-						href="/problems"
-						className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-					>
-						問題一覧
-					</Link>
-					<Link
-						href="/tags"
-						className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-					>
-						タグ管理
-					</Link>
-					<Link
-						href="/upload"
-						className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-					>
-						問題をアップロード
-					</Link>
+					{navLinks.map((link) => (
+						<Link
+							key={link.href}
+							href={link.href}
+							className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+						>
+							{link.label}
+						</Link>
+					))}
 				</nav>
 
 				<div className="flex items-center gap-3">
 					<UserAuthForm />
+					<Sheet>
+						<SheetTrigger asChild>
+							<Button
+								variant="ghost"
+								size="icon"
+								className="md:hidden"
+							>
+								<Menu className="h-5 w-5" />
+							</Button>
+						</SheetTrigger>
+						<SheetContent side="right">
+							<SheetTitle className="sr-only">メニュー</SheetTitle>
+							<nav className="flex flex-col gap-4 mt-8">
+								{navLinks.map((link) => (
+									<Link
+										key={link.href}
+										href={link.href}
+										className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors"
+									>
+										{link.label}
+									</Link>
+								))}
+							</nav>
+						</SheetContent>
+					</Sheet>
 				</div>
 			</div>
 		</header>

@@ -32,7 +32,8 @@ Env file: `frontend/.env.local`.
 
 ### Docker Compose
 ```bash
-docker compose up -d            # postgres + backend(:8001) + frontend(:3000)
+docker compose up -d            # production: postgres + backend(:8001) + frontend(:3000)
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d  # dev with hot-reload
 docker compose down -v
 ```
 Root `.env` supplies `POSTGRES_PASSWORD`, `OPENROUTER_API_KEY`, `NEXTAUTH_SECRET`.

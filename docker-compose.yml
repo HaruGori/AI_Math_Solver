@@ -1,0 +1,54 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ai-math-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ai_math_solver
+      POSTGRES_USER: ai_math
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    # ホスト公開不要（backendからの内部通信のみ）
+    # ports:
+    #   - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ai_math -d ai_math_solver"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: ai-math-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://ai_math:${POSTGRES_PASSWORD:-password}@db:5432/ai_math_solver
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:?error}
+      OPENROUTER_AI_MODEL: ${OPENROUTER_AI_MODEL:-minimax/minimax-m2:free}
+    ports:
+      - "8001:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: ai-math-frontend
+    restart: unless-stopped
+    environment:
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?error}
+      NEXT_PUBLIC_API_URL: http://backend:8000
+      NEXT_PUBLIC_API_TIMEOUT: "30000"
+      NEXT_PUBLIC_MAX_RETRIES: "3"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

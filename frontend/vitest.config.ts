@@ -10,6 +10,23 @@ export default defineConfig({
 		setupFiles: ["./vitest.setup.ts"],
 		include: ["**/*.test.{ts,tsx}"],
 		exclude: ["node_modules", ".next"],
+		coverage: {
+			provider: "v8",
+			reporter: ["text", "json-summary", "lcov"],
+			include: [
+				"app/**/*.{ts,tsx}",
+				"components/**/*.{ts,tsx}",
+				"hooks/**/*.{ts,tsx}",
+				"lib/**/*.{ts,tsx}",
+			],
+			exclude: ["**/*.test.{ts,tsx}", "**/__tests__/**", "**/*.d.ts"],
+			thresholds: {
+				lines: 25,
+				branches: 24,
+				functions: 23,
+				statements: 25,
+			},
+		},
 	},
 	resolve: {
 		alias: {

@@ -27,3 +27,18 @@ dev = [
     "pytest-cov>=5.0.0",
 ]
 # You can add uv-specific configuration here if needed in the future.
+
+[tool.coverage.run]
+branch = true
+source = ["."]
+omit = [
+    "tests/*",
+    "alembic/*",
+    ".venv/*",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+precision = 1
+fail_under = 94

@@ -11,6 +11,10 @@ AI Math Solverは、ユーザーが数学の問題を解決・管理するため
 *   **`frontend/`**: Next.js (React) を使用したユーザーインターフェース。
 *   **`backend/`**: Python (FastAPI) を使用したAPIサービス。
 
+### テストカバレッジ
+
+CIでの計測方法、基準値、閾値は [docs/test-coverage.md](docs/test-coverage.md) を参照してください。
+
 ## 詳細なプロジェクト情報
 
 ### AI Math Solver プロジェクト概要

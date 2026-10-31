@@ -30,7 +30,8 @@ describe("ImageUpload", () => {
 		);
 
 		const file = createMockFile("test.png", 100, "image/png");
-		const input = container.querySelector('input[type="file"]')!;
+		const input = container.querySelector('input[type="file"]');
+		if (!input) throw new Error("file input not found");
 		await user.upload(input, file);
 
 		expect(onImageChange).toHaveBeenCalledWith(file);
